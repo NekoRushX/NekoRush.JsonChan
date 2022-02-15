@@ -23,14 +23,8 @@ internal class DynamicContext
     /// </summary>
     public void PushContext(string name)
     {
-        // Create a subtree
-        if (name == string.Empty)
-        {
-            _contextPath.Push(_contextPath.Count == 0 ? _value : new ExpandoObject());
-            return;
-        }
-
         var context = new ExpandoObject();
+        if (_contextPath.Count == 0) _value = context;
 
         if (IsArrayContext())
         {
@@ -38,8 +32,11 @@ internal class DynamicContext
             _contextPath.Push(context);
             return;
         }
+        
+        // Create a subtree
+        if (name != string.Empty)
+            PutValue(name, context);
 
-        PutValue(name, context);
         _contextPath.Push(context);
     }
 
@@ -54,16 +51,18 @@ internal class DynamicContext
     public void PushArrayContext(string name)
     {
         var context = new List<dynamic>();
+        if (_contextPath.Count == 0) _value = context;
 
-        // Create a subtree
-        if (name == string.Empty)
+        if (IsArrayContext())
         {
-            if (_contextPath.Count == 0) _value = context;
+            PutArrayValue(context);
             _contextPath.Push(context);
             return;
         }
+        
+        if (name != string.Empty)
+            PutValue(name, context);
 
-        PutValue(name, context);
         _contextPath.Push(context);
     }
 
