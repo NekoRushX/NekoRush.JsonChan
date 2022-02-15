@@ -23,18 +23,25 @@ internal class JsonParser
 
     private readonly Stream _jsonStream;
     private readonly DynamicContext _dynamicContext;
+    private readonly bool _needDispose;
 
     public JsonParser(Stream json)
     {
         _jsonStream = json;
-        _jsonStream.Seek(0, SeekOrigin.Begin);
-
         _dynamicContext = new();
+    }
+
+    ~JsonParser()
+    {
+        // Destroy the stream if it
+        // was created from string or byte[]
+        if (_needDispose) _jsonStream.Dispose();
     }
 
     public JsonParser(IEnumerable<byte> json)
         : this(new MemoryStream(json.ToArray()))
     {
+        _needDispose = true;
     }
 
     public JsonParser(string json)
