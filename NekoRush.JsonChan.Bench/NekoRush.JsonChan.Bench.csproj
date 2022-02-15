@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\NekoRush.JsonChan\NekoRush.JsonChan.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="BenchFiles" />
+    </ItemGroup>
+
+</Project>

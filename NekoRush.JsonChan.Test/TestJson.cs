@@ -1,3 +1,4 @@
+using System.IO;
 using NUnit.Framework;
 
 namespace NekoRush.JsonChan.Test;
@@ -8,7 +9,7 @@ public class Tests
     public void TestJson()
     {
         var json = Json.Parse(
-            @"
+@"
 {
     ""apple""  :  1,
     ""banana"" :  2,
@@ -27,7 +28,7 @@ public class Tests
     public void TestJson2()
     {
         var json = Json.Parse(
-            @"
+@"
 {
     ""str"" : ""this is a string"",
     ""number"" : 3.1415926,
@@ -46,7 +47,7 @@ public class Tests
     public void TestJson3()
     {
         var json = Json.Parse(
-            @"
+@"
 {
     ""str"" : ""this is a string"",
     ""number"" : 3.1415926,
@@ -93,7 +94,7 @@ public class Tests
         Assert.AreEqual(json[2], "coco");
         Assert.Pass();
     }
-    
+
     [Test]
     public void TestJson5()
     {
