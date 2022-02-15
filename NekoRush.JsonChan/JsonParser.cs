@@ -207,6 +207,9 @@ internal class JsonParser
         } while (_jsonStream.Length > 0);
 
         ret:
+
+        // Additional check
+        AssertExcepts(currExcept, ParseStatus.ExceptArrayEnd | ParseStatus.ExceptObjEnd);
         return _dynamicContext.Value;
     }
 
@@ -286,6 +289,9 @@ internal class JsonParser
                 case '\\':
                     switch (_jsonStream.ReadByte())
                     {
+                        // EOF
+                        case -1: goto eof;
+
                         case '"':
                             list.Add((byte) '"');
                             break;
@@ -306,6 +312,7 @@ internal class JsonParser
             }
         } while (charBuf != -1);
 
+        eof:
         throw new InvalidJsonException(_jsonStream.Position, "Unexpected EOF.");
     }
 
