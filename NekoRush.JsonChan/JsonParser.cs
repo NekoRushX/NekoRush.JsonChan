@@ -22,14 +22,14 @@ internal class JsonParser
     }
 
     private readonly Stream _jsonStream;
-    private readonly DynamicValue _dynamicValue;
+    private readonly DynamicContext _dynamicContext;
 
     public JsonParser(Stream json)
     {
         _jsonStream = json;
         _jsonStream.Seek(0, SeekOrigin.Begin);
 
-        _dynamicValue = new();
+        _dynamicContext = new();
     }
 
     public JsonParser(IEnumerable<byte> json)
@@ -68,7 +68,7 @@ internal class JsonParser
                 // Push object context
                 case '{':
                     AssertExcepts(currExcept, ParseStatus.ExceptObjStart);
-                    _dynamicValue.PushContext(currString);
+                    _dynamicContext.PushContext(currString);
                     needValue = false;
                     currExcept = ParseStatus.ExceptQuote | ParseStatus.ExceptArrayStart | ParseStatus.ExceptObjStart | ParseStatus.ExceptObjEnd;
                     break;
@@ -78,13 +78,13 @@ internal class JsonParser
                     AssertExcepts(currExcept, ParseStatus.ExceptObjEnd);
 
                     // Pop context 
-                    _dynamicValue.PopContext();
+                    _dynamicContext.PopContext();
                     currExcept = ParseStatus.ExceptComma | ParseStatus.ExceptArrayEnd | ParseStatus.ExceptObjEnd;
                     break;
 
                 case '[':
                     AssertExcepts(currExcept, ParseStatus.ExceptArrayStart);
-                    _dynamicValue.PushArrayContext(currString);
+                    _dynamicContext.PushArrayContext(currString);
                     needValue = false;
                     currExcept = ParseStatus.ExceptQuote | ParseStatus.ExceptArrayStart | ParseStatus.ExceptObjStart | ParseStatus.ExceptArrayEnd;
                     break;
@@ -93,7 +93,7 @@ internal class JsonParser
                     AssertExcepts(currExcept, ParseStatus.ExceptArrayEnd);
 
                     // Pop context 
-                    _dynamicValue.PopContext();
+                    _dynamicContext.PopContext();
                     currExcept = ParseStatus.ExceptComma | ParseStatus.ExceptArrayEnd | ParseStatus.ExceptObjEnd;
                     break;
 
@@ -117,11 +117,11 @@ internal class JsonParser
                     if (needValue)
                     {
                         needValue = false;
-                        _dynamicValue.PutValue(currString, ParseString());
+                        _dynamicContext.PutValue(currString, ParseString());
                     }
-                    else if (_dynamicValue.IsArrayContext())
+                    else if (_dynamicContext.IsArrayContext())
                     {
-                        _dynamicValue.PutArrayValue(ParseString());
+                        _dynamicContext.PutArrayValue(ParseString());
                     }
                     else currString = ParseString();
 
@@ -136,11 +136,11 @@ internal class JsonParser
                     if (needValue)
                     {
                         needValue = false;
-                        _dynamicValue.PutValue(currString, ParseNumber());
+                        _dynamicContext.PutValue(currString, ParseNumber());
                     }
-                    else if (_dynamicValue.IsArrayContext())
+                    else if (_dynamicContext.IsArrayContext())
                     {
-                        _dynamicValue.PutArrayValue(ParseNumber());
+                        _dynamicContext.PutArrayValue(ParseNumber());
                     }
                     else currString = ParseString();
 
@@ -154,11 +154,11 @@ internal class JsonParser
                     if (needValue)
                     {
                         needValue = false;
-                        _dynamicValue.PutValue(currString, ParseBoolean());
+                        _dynamicContext.PutValue(currString, ParseBoolean());
                     }
-                    else if (_dynamicValue.IsArrayContext())
+                    else if (_dynamicContext.IsArrayContext())
                     {
-                        _dynamicValue.PutArrayValue(ParseBoolean());
+                        _dynamicContext.PutArrayValue(ParseBoolean());
                     }
 
                     currExcept = ParseStatus.ExceptComma | ParseStatus.ExceptArrayEnd | ParseStatus.ExceptObjEnd;
@@ -173,11 +173,11 @@ internal class JsonParser
                         if (needValue)
                         {
                             needValue = false;
-                            _dynamicValue.PutValue(currString, null!);
+                            _dynamicContext.PutValue(currString, null!);
                         }
-                        else if (_dynamicValue.IsArrayContext())
+                        else if (_dynamicContext.IsArrayContext())
                         {
-                            _dynamicValue.PutArrayValue(null!);
+                            _dynamicContext.PutArrayValue(null!);
                         }
                     }
 
@@ -194,7 +194,7 @@ internal class JsonParser
         } while (_jsonStream.Length > 0);
 
         ret:
-        return _dynamicValue.Value;
+        return _dynamicContext.Value;
     }
 
     private dynamic ParseNumber()

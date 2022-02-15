@@ -2,6 +2,9 @@
 
 namespace NekoRush.JsonChan;
 
+/// <summary>
+/// Static JSON parser class
+/// </summary>
 public static class Json
 {
     /// <summary>

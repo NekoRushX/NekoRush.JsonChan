@@ -5,14 +5,14 @@
 
 namespace NekoRush.JsonChan.Utils;
 
-public class DynamicValue
+internal class DynamicContext
 {
     public dynamic Value => _value;
 
     private dynamic _value;
     private readonly Stack<dynamic> _contextPath;
 
-    public DynamicValue()
+    public DynamicContext()
     {
         _value = new ExpandoObject();
         _contextPath = new();
@@ -98,7 +98,7 @@ internal class Stack<T> : List<T>
 
     public T Pop()
     {
-        if (Count <= 0) return default;
+        if (Count <= 0) return default!;
 
         var item = this[0];
         RemoveAt(0);
@@ -107,6 +107,6 @@ internal class Stack<T> : List<T>
 
     public T Peek()
     {
-        return Count > 0 ? this[0] : default;
+        return Count > 0 ? this[0] : default!;
     }
 }
