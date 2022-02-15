@@ -101,4 +101,28 @@ public class Tests
         var json = Json.Parse("null");
         Assert.Pass();
     }
+    
+    [Test]
+    public void TestJson6()
+    {
+        var json = Json.Parse(
+@"
+[
+    // This is an apple
+    ""apple"",
+
+    // This is a banana
+    ""banana"",
+
+    // This is a coconut
+    ""coconut""
+]
+");
+
+        Assert.AreEqual(json[0], "apple");
+        Assert.AreEqual(json[1], "banana");
+        Assert.AreEqual(json[2], "coconut");
+        Assert.Pass();
+    }
+    
 }

@@ -78,7 +78,12 @@ internal class JsonParser
                 case '\r':
                 case '\n':
                 case '\t':
-                    continue;
+                    break;
+
+                // Ignore comments
+                case '/':
+                    if (ReadAndCompare(1, "/")) ReadUntil('\n');
+                    break;
 
                 // Push object context
                 case '{':
@@ -334,6 +339,29 @@ internal class JsonParser
         var result = chars == Encoding.UTF8.GetString(charBuf);
         if (!result) _jsonStream.Seek(-length, SeekOrigin.Current);
         return result;
+    }
+
+    /// <summary>
+    /// Read the stream until
+    /// </summary>
+    /// <param name="until"></param>
+    /// <returns></returns>
+    private string ReadUntil(char until)
+    {
+        var list = new List<byte>();
+        var charBuf = 0;
+
+        do
+        {
+            charBuf = _jsonStream.ReadByte();
+
+            if (charBuf == until)
+                return Encoding.UTF8.GetString(list.ToArray());
+
+            list.Add((byte) charBuf);
+        } while (charBuf != -1);
+
+        throw new InvalidJsonException(_jsonStream.Position, "Unexpected EOF.");
     }
 
     /// <summary>
