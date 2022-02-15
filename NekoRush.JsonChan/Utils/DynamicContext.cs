@@ -2,6 +2,7 @@
 
 // ReSharper disable ConvertToAutoProperty
 // ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 
 namespace NekoRush.JsonChan.Utils;
 

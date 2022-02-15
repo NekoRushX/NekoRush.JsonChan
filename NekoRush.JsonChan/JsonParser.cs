@@ -55,6 +55,11 @@ internal class JsonParser
         if (!_jsonStream.CanRead)
             throw new InvalidJsonException("Stream cannot read.");
 
+        // Asserts the stream can seek
+        if (!_jsonStream.CanSeek)
+            throw new InvalidJsonException("Stream cannot seek.");
+        _jsonStream.Seek(0, SeekOrigin.Begin);
+
         var currExcept = ParseStatus.ExceptObjStart | ParseStatus.ExceptArrayStart;
         var currString = string.Empty;
         var needValue = false;
@@ -70,6 +75,9 @@ internal class JsonParser
 
                 // Ignore all white characters
                 case ' ':
+                case '\r':
+                case '\n':
+                case '\t':
                     continue;
 
                 // Push object context
@@ -189,10 +197,12 @@ internal class JsonParser
                     }
 
                     // Throw the exception
-                    else throw new InvalidJsonException(_jsonStream.Position, "Unexpected token.");
+                    else goto default;
 
                     currExcept = ParseStatus.ExceptComma | ParseStatus.ExceptArrayEnd | ParseStatus.ExceptObjEnd;
                     break;
+
+                default: throw new InvalidJsonException(_jsonStream.Position, "Unexpected token.");
             }
         } while (_jsonStream.Length > 0);
 
@@ -299,6 +309,13 @@ internal class JsonParser
         throw new InvalidJsonException(_jsonStream.Position, "Unexpected EOF.");
     }
 
+    /// <summary>
+    /// Read stream and compare the string
+    /// </summary>
+    /// <param name="length">Intended to read</param>
+    /// <param name="chars">Chars to compare</param>
+    /// <returns></returns>
+    /// <exception cref="InvalidJsonException"></exception>
     private bool ReadAndCompare(int length, string chars)
     {
         if (_jsonStream.Length < length)
@@ -312,6 +329,12 @@ internal class JsonParser
         return result;
     }
 
+    /// <summary>
+    /// Assert the token excepts in the next
+    /// </summary>
+    /// <param name="current">Current token status</param>
+    /// <param name="excepted">Excepted token</param>
+    /// <exception cref="InvalidJsonException"></exception>
     private void AssertExcepts(ParseStatus current, ParseStatus excepted)
     {
         if ((current & excepted) == 0)
