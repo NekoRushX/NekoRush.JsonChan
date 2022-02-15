@@ -3,7 +3,7 @@
 A radical JSON parser library that parses JSON into a dynamic tree.   
 
 Very simple to use, only need to code one line.  
-Especially suit for some scenes with non-performance sensitivity.
+Especially suit for some non-performance sensitivity scenes.
 
 ## Example
 ```C#

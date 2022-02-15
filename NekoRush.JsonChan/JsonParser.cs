@@ -46,7 +46,7 @@ internal class JsonParser
     {
         // Asserts the stream can read
         if (!_jsonStream.CanRead)
-            throw new InvalidJsonException("Invalid JSON: Stream cannot read.");
+            throw new InvalidJsonException("Stream cannot read.");
 
         var currExcept = ParseStatus.ExceptObjStart | ParseStatus.ExceptArrayStart;
         var currString = string.Empty;
@@ -182,11 +182,7 @@ internal class JsonParser
                     }
 
                     // Throw the exception
-                    else
-                    {
-                        throw new InvalidJsonException(_jsonStream.Position,
-                            $"Unexpected token in JSON at position {_jsonStream.Position}.");
-                    }
+                    else throw new InvalidJsonException(_jsonStream.Position, "Unexpected token.");
 
                     currExcept = ParseStatus.ExceptComma | ParseStatus.ExceptArrayEnd | ParseStatus.ExceptObjEnd;
                     break;
@@ -215,14 +211,14 @@ internal class JsonParser
 
                 case '.':
                     if (list.Count == 0 || dotCount > 1)
-                        throw new InvalidJsonException("");
+                        throw new InvalidJsonException(_jsonStream.Position, "Unexpected number type.");
                     list.Add('.');
                     dotCount++;
                     break;
 
                 case '-':
                     if (subCount > 1)
-                        throw new InvalidJsonException("");
+                        throw new InvalidJsonException(_jsonStream.Position, "Unexpected number type.");
                     list.Add('-');
                     subCount++;
                     break;
@@ -236,7 +232,7 @@ internal class JsonParser
                     _jsonStream.Seek(-1, SeekOrigin.Current);
 
                     if (subCount > 0 && !str.StartsWith('-'))
-                        throw new InvalidJsonException("");
+                        throw new InvalidJsonException(_jsonStream.Position, "Unexpected number type.");
 
                     // Parse number 
                     if (dotCount == 0 && subCount == 0) return ulong.Parse(str);
@@ -245,8 +241,7 @@ internal class JsonParser
             }
         } while (charBuf != -1);
 
-        throw new InvalidJsonException(_jsonStream.Position,
-            $"Unexpected EOF in JSON at position {_jsonStream.Position}.");
+        throw new InvalidJsonException(_jsonStream.Position, "Unexpected EOF.");
     }
 
     private bool ParseBoolean()
@@ -254,8 +249,7 @@ internal class JsonParser
         if (ReadAndCompare(3, "rue")) return true;
         if (ReadAndCompare(4, "alse")) return false;
 
-        throw new InvalidJsonException(_jsonStream.Position,
-            $"Unexpected bool in JSON at position {_jsonStream.Position}.");
+        throw new InvalidJsonException(_jsonStream.Position, "Unexpected boolean type.");
     }
 
     private string ParseString()
@@ -295,14 +289,13 @@ internal class JsonParser
             }
         } while (charBuf != -1);
 
-        throw new InvalidJsonException(_jsonStream.Position,
-            $"Unexpected EOF in JSON at position {_jsonStream.Position}.");
+        throw new InvalidJsonException(_jsonStream.Position, "Unexpected EOF.");
     }
 
     private bool ReadAndCompare(int length, string chars)
     {
         if (_jsonStream.Length < length)
-            throw new InvalidJsonException("");
+            throw new InvalidJsonException(_jsonStream.Position, "Unexpected EOF.");
 
         var charBuf = new byte[length];
         _jsonStream.Read(charBuf, 0, length);
@@ -315,10 +308,7 @@ internal class JsonParser
     private void AssertExcepts(ParseStatus current, ParseStatus excepted)
     {
         if ((current & excepted) == 0)
-        {
-            throw new InvalidJsonException(_jsonStream.Position,
-                $"Unexpected token in JSON at position {_jsonStream.Position}.");
-        }
+            throw new InvalidJsonException(_jsonStream.Position, "Unexpected token.");
 
         // assert ok
     }
