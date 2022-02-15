@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NekoRush.JsonChan", "NekoRush.JsonChan\NekoRush.JsonChan.csproj", "{C3CC71F3-3337-445D-B7EB-86B370371C27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NekoRush.JsonChan.Test", "NekoRush.JsonChan.Test\NekoRush.JsonChan.Test.csproj", "{61AAE792-4AC7-4FF8-BEC7-5B3410C722ED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C3CC71F3-3337-445D-B7EB-86B370371C27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3CC71F3-3337-445D-B7EB-86B370371C27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3CC71F3-3337-445D-B7EB-86B370371C27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3CC71F3-3337-445D-B7EB-86B370371C27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61AAE792-4AC7-4FF8-BEC7-5B3410C722ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61AAE792-4AC7-4FF8-BEC7-5B3410C722ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61AAE792-4AC7-4FF8-BEC7-5B3410C722ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61AAE792-4AC7-4FF8-BEC7-5B3410C722ED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
