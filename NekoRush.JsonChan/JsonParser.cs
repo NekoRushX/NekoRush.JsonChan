@@ -12,13 +12,13 @@ internal class JsonParser
     [Flags]
     private enum ParseStatus
     {
-        ExceptObjStart = 1, /*    {  */
-        ExceptObjEnd = 2, /*      }  */
+        ExceptObjStart = 1,   /*  {  */
+        ExceptObjEnd = 2,     /*  }  */
         ExceptArrayStart = 4, /*  [  */
-        ExceptArrayEnd = 8, /*    ]  */
-        ExceptComma = 16, /*      ,  */
-        ExceptQuote = 32, /*      "  */
-        ExceptColon = 64 /*       :  */
+        ExceptArrayEnd = 8,   /*  ]  */
+        ExceptComma = 16,     /*  ,  */
+        ExceptQuote = 32,     /*  "  */
+        ExceptColon = 64      /*  :  */
     }
 
     private readonly Stream _jsonStream;
@@ -292,7 +292,9 @@ internal class JsonParser
                 case -1: break;
 
                 case '\\':
-                    switch (_jsonStream.ReadByte())
+
+                    var convCharBuf = _jsonStream.ReadByte();
+                    switch (convCharBuf)
                     {
                         // EOF
                         case -1: goto eof;
@@ -303,6 +305,11 @@ internal class JsonParser
 
                         case '\\':
                             list.Add((byte) '\\');
+                            break;
+
+                        default:
+                            list.Add((byte) charBuf);
+                            list.Add((byte) convCharBuf);
                             break;
                     }
 
