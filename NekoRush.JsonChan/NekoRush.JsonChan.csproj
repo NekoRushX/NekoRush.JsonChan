@@ -9,6 +9,25 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <Product>NekoRush.JsonChan</Product>
+        <Authors>NekoRush</Authors>
+        <Copyright>NekoRush (C) $([System.DateTime]::Now.Year)</Copyright>
+        <Description>A radical JSON parser library that parses JSON into a dynamic tree.</Description>
+
+        <PackageVersion>1.0.1</PackageVersion>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+
+        <RepositoryType>Git</RepositoryType>
+        <RepositoryUrl>https://github.com/NekoRushX/NekoRush.JsonChan</RepositoryUrl>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\LICENSE" Pack="true" PackagePath=""/>
+    </ItemGroup>
+    
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
